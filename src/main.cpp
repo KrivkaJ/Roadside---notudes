@@ -26,6 +26,28 @@ void setup()
   par.max_diff_readings = 1;
   // Set the serial communication baud rate to 115200
   Serial.begin(115200);
+
+  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
+  servoBus.setAutoStopParams(par);
+  servoBus.setAutoStop(0, false);
+
+    while (true)
+  {
+    if (Serial.available() > 0)
+    {
+      String data = Serial.readStringUntil('\n');
+      if (data == "ready")
+      {
+        man.leds().green(true);
+        break;
+      }
+    }
+    delay(10);
+  }
+
+
+
+  //startovaci tlacitko
   while (true)
   {
     if (man.buttons().up() == 1)
@@ -53,8 +75,7 @@ void setup()
   StopMotors();
   //tady se podiva na barvu baterky 
   man.stupidServo(2).setPosition(2);//pozice magnetu pro pousteni baterek 
-   ////////////////////////////////////////prvni baterka 
-
+   ////////////////////////////////////////prvni baterka  
 BackwardUntillWall();
 
 
@@ -68,46 +89,7 @@ BackwardUntillWall();
 
 
 
-//////////endtest 
 
-////////////////////////////////////////////////////////////////////////
-
-  while (true)
-  {
-    if (Serial.available() > 0)
-    {
-      String data = Serial.readStringUntil('\n');
-      if (data == "ready")
-      {
-        man.leds().green(true);
-        break;
-      }
-    }
-    delay(10);
-  }
-//////////////////////////////////////////////////////////////////
-
-//startovaci tlacitko
-  ///////////////////////////////////////////////
-  while (true)
-  {
-    if (man.buttons().up() == 1)
-    {
-      break;
-    }
-
-    delay(10);
-  }
-/////////////////////////////////////////////  
-  // Connecting to the servo bus 
-  delay(500);
-  servoBus.begin(2, UART_NUM_1, GPIO_NUM_27);
-  servoBus.setAutoStopParams(par);
-  servoBus.setAutoStop(0, false);
-  //servoBus.setAutoStop(1, true);
-  //klepeto.Move(full_closed);
-
-////////////////////////////
 
 
 }
