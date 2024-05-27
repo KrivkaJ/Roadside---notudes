@@ -9,9 +9,7 @@ auto &man = rb::Manager::get(); // needs to be there to work man.sometning
 //  l motor 2
 double mm_to_ticks = 0.215;
 int wheel_base = 150;
-int last_ticks_M4 = 0;
-int last_ticks_M1 = 0;
-int currenrt_x_pos = 0;
+double currenrt_x_pos = 0;
 int last_x_pos = 0;
 // calculates angle for left klepeto
 
@@ -22,21 +20,21 @@ int Baterry_3 = 1450 - 2*65;
 int Baterry_4 = 1450 - 3*65;
 
 
-int Box_1 = 1990;
+int Box_1 = 1950;
 
-int Box_2 = 1990 - 1*200;
+int Box_2 = Box_1 - 1*200;
 
-int Box_3 = 1990 - 2*200;
+int Box_3 = Box_1 - 2*200;
 
-int Box_4 = 1990 - 3*200;
+int Box_4 = Box_1 - 3*200;
 
-int Box_5 = 1990 - 4*200;
+int Box_5 = Box_1 - 4*200;
 
-int Box_6 = 1990 - 5*200;
+int Box_6 = Box_1 - 5*200;
 
-int Box_7 = 1990 - 6*200;
+int Box_7 = Box_1 - 6*200;
 
-int Box_8 = 1990 - 7*200;
+int Box_8 = Box_1 - 7*200;
 
 
 
@@ -141,10 +139,13 @@ void Straight(int speed, int distance,int timeout)
 
     delay(10);
     time = time + 10;
-  
-    currenrt_x_pos =  currenrt_x_pos+(ticks_M1-last_ticks_M1)*mm_to_ticks;
+    currenrt_x_pos =  currenrt_x_pos + (mm_to_ticks*ticks_M1 - last_ticks_M1*mm_to_ticks);
     last_ticks_M1 = ticks_M1;
     //Serial.println(currenrt_x_pos);
+    //  Serial.print("current");
+    //  Serial.println(ticks_M1*mm_to_ticks);
+    //  Serial.print("last");
+    //  Serial.println(last_ticks_M1*mm_to_ticks);
   }
   // man.motor(rb::MotorId::M1).speed(0);
   // man.motor(rb::MotorId::M4).speed(0);
@@ -446,8 +447,9 @@ void Backward(int speed, int distance)
   man.motor(rb::MotorId::M4).setCurrentPosition(0);
   int ticks_M1 = 0;
   int ticks_M4 = 0;
+  int last_ticks_M1 = 0;
   distance = distance / mm_to_ticks;
-  Serial.println(distance);
+  //Serial.println(distance);
   while (ticks_M1 < distance)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
     man.motor(rb::MotorId::M1).speed(speed);
@@ -463,6 +465,8 @@ void Backward(int speed, int distance)
 
     delay(10);
   }
+    currenrt_x_pos =  currenrt_x_pos - (mm_to_ticks*ticks_M1 - last_ticks_M1*mm_to_ticks);
+    last_ticks_M1 = ticks_M1;
   // man.motor(rb::MotorId::M1).speed(0);
   // man.motor(rb::MotorId::M4).speed(0);
 }

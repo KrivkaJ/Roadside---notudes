@@ -10,7 +10,10 @@ void StopMotors(){
   rb::Manager::get().motor(rb::MotorId::M3).speed(0);
   rb::Manager::get().motor(rb::MotorId::M4).speed(0);
 }
-
+void MoveToGrabBaterry(){
+  Straight(200,30,3000);
+  Backward(200,30);
+}
 void setup()
 {
   // Get the manager instance as a singleton
@@ -34,65 +37,24 @@ void setup()
   }
   man.stupidServo(0).setPosition(2);//90 deg right
   man.stupidServo(1).setPosition(1.4); 
-  man.stupidServo(2).setPosition(0);
-  delay(800);
-
-
-
-  Straight(1000,1990,20000);
-  StopMotors();
-  Serial.println(currenrt_x_pos);
-  Backward(1000,currenrt_x_pos-Box_2);
-
-  while (true)
-  {
-    if (man.buttons().up() == 1)
-    {
-      break;
-    }
-
-    delay(10);
-  }
-
-
-  //man.stupidServo(1).disable();
+  man.stupidServo(2).setPosition(0);//pozice magnetu pro brani baterek 
   delay(1000);
-  Straight(1500,1450,10000);
+  //////////////////////////////////konec pripravy
+  Straight(1500,Baterry_1,10000);
   StopMotors();
-  ////////////////////////////////
-  delay(1000);
+  ////////////////////////////////dojede k prvni baterce 
   man.stupidServo(1).disable();
   delay(1000);
-  Straight(200,30,3000);
-  Backward(200,30);
-  man.stupidServo(1).setPosition(1.55);
+  MoveToGrabBaterry();
+  man.stupidServo(1).setPosition(1.55);//zvedne rameno 
   delay(1000);
-  man.stupidServo(0).setPosition(-2);
-  delay(1000);
-  Straight(400,500,8000);
-    man.motor(rb::MotorId::M1).speed(0);
-  man.motor(rb::MotorId::M4).speed(0);
-   man.stupidServo(2).setPosition(2);
+  man.stupidServo(0).setPosition(-2);//otoci se ramenem na drohou stranu 
+  Straight(1000,Box_1-currenrt_x_pos,8000);
+  StopMotors();
+  //tady se podiva na barvu baterky 
+  man.stupidServo(2).setPosition(2);//pozice magnetu pro pousteni baterek 
    ////////////////////////////////////////prvni baterka 
-   delay(1000);
-   man.stupidServo(2).setPosition(0);
-   man.stupidServo(0).setPosition(2);
-   delay(1000);
-   Backward(400,550);
-   man.stupidServo(1).setPosition(1.4); 
-   man.stupidServo(1).disable();
-   delay(1000);
-  Straight(200,30,3000);
-  Backward(200,30);
-  man.stupidServo(1).setPosition(1.55);
-  delay(1000);
-  man.stupidServo(0).setPosition(-2);
-  delay(1000);
-  Straight(400,450,8000);
-  man.motor(rb::MotorId::M1).speed(0);
-  man.motor(rb::MotorId::M4).speed(0);
-   man.stupidServo(2).setPosition(2);
-   delay(500);
+
 BackwardUntillWall();
 
 
