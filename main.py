@@ -43,7 +43,6 @@ print("sending ready message")
 
 video_reader = imageio.get_reader('<video0>','ffmpeg')#inicializace kamery
 
-
 # while True:
 #     if ser.in_waiting > 0:
 #         line = ser.readline().decode('utf-8').strip()
