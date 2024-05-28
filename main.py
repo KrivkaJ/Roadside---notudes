@@ -40,21 +40,25 @@ def WaitForCommand():
             if line == "givecolor":
                 break
 def SendData(box_color):
-    while True:
-            ser.write(box_color.encode('utf-8'))
-            ser.write("\n".encode('utf-8'))
-            time.sleep(0.1)
+        ser.write(box_color.encode('utf-8'))
+        ser.write("\n".encode('utf-8'))
+        time.sleep(0.1)
 
 ##start of the program 
-#comuniction_setup()
+comuniction_setup()
 print("sending ready message")
-#ser.write("ready\n".encode('utf-8'))
+ser.write("ready\n".encode('utf-8'))
 
 video_reader = imageio.get_reader('<video0>','ffmpeg')#inicializace kamery
-for i in range(8):
+test = video_reader.get_next_data()
+cv2.imwrite("test.jpg",test)
+
+for i in range(2):
     WaitForCommand()
-    #SendData(GetBoxColor())
-    print(GetBoxColor())
+    clr = GetBoxColor()
+    SendData(clr)
+    print(clr)
+    
 
 
 

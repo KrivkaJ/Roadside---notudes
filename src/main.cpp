@@ -166,12 +166,12 @@ void setup()
     Straight(1000, Box_1 - currenrt_x_pos - 150, 8000);
     StopMotors();
     Serial.println("givecolor");
-    delay(1000);
-    Straight(1000, 150, 3000);
-    StopMotors();
+    delay(500);
     Box_1_c = ReciveData();
     if (Box_1_c == RED)
     {
+       Straight(1000, 150, 3000);
+      StopMotors();
       man.stupidServo(2).setPosition(2); // pozice magnetu pro pousteni baterek
     }
     if (Box_1_c == BLUE)
