@@ -53,7 +53,7 @@ print("sending ready message")
 video_reader = imageio.get_reader('<video0>','ffmpeg')#inicializace kamery
 for i in range(8):
     WaitForCommand()
-    SendData(GetBoxColor())
+    #SendData(GetBoxColor())
     print(GetBoxColor())
 
 
