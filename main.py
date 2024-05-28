@@ -33,8 +33,17 @@ def GetBoxColor():
     #print('Average color (RGB):', average_color)
     return box_color
 
-
-
+def WaitForCommand():
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').strip()
+            if line == "givecolor":
+                break
+def SendData(box_color):
+    while True:
+            ser.write(box_color.encode('utf-8'))
+            ser.write("\n".encode('utf-8'))
+            time.sleep(0.1)
 
 ##start of the program 
 #comuniction_setup()
@@ -42,13 +51,11 @@ print("sending ready message")
 #ser.write("ready\n".encode('utf-8'))
 
 video_reader = imageio.get_reader('<video0>','ffmpeg')#inicializace kamery
+for i in range(8):
+    WaitForCommand()
+    SendData(GetBoxColor())
+    print(GetBoxColor())
 
-# while True:
-#     if ser.in_waiting > 0:
-#         line = ser.readline().decode('utf-8').strip()
-#         if line == "givecolor":
-#             break
 
-################################################################################
-print(GetBoxColor())
+
 
