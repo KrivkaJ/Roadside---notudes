@@ -1,12 +1,10 @@
 import numpy as np
 import cv2 
-from matplotlib import pyplot as plt
-import threading
 import time
 import serial
 import imageio
 
-
+#otevře a nastavý sériovou komunikaci 
 def comuniction_setup():
     port = '/dev/ttyACM0'
     baund_rate = 115200
@@ -15,7 +13,7 @@ def comuniction_setup():
     time.sleep(2)
     ser.reset_input_buffer()
     print("serial comunication setup done")
-    #
+#spočítá průměrnou barvu fotky v RGB formátu a vrátí barvu krabičky 
 def GetBoxColor():
     img = video_reader.get_next_data()
     # Calculate the average color per channel
@@ -53,13 +51,10 @@ video_reader = imageio.get_reader('<video0>','ffmpeg')#inicializace kamery
 test = video_reader.get_next_data()
 cv2.imwrite("test.jpg",test)
 
-for i in range(2):
+for i in range(4):
     WaitForCommand()
     clr = GetBoxColor()
     SendData(clr)
     print(clr)
     
-
-
-
 

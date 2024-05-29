@@ -39,30 +39,32 @@ BoxColor Box_8_c = IDK;
 
 Side side = REDSIDE;
 
+bool baterry_loaded = false;
 
-BoxColor ReciveData(){
+BoxColor ReciveData()
+{
   BoxColor box = IDK;
   while (true)
+  {
+    if (Serial.available() > 0)
+    {
+      String data = Serial.readStringUntil('\n');
+      if (data == "red")
       {
-        if (Serial.available() > 0)
-        {
-          String data = Serial.readStringUntil('\n');
-          if (data == "red")
-          {
-            box = RED;
+        box = RED;
 
-            break;
-          }
-          if (data == "blue")
-          {
-           box = BLUE;
-            break;
-          }
-        }
-        delay(10);
+        break;
       }
-      return box;
-} 
+      if (data == "blue")
+      {
+        box = BLUE;
+        break;
+      }
+    }
+    delay(10);
+  }
+  return box;
+}
 void setup()
 {
   // Get the manager instance as a singleton
@@ -159,50 +161,46 @@ void setup()
     ////////////////////////////////dojede k prvni baterce
     man.stupidServo(1).disable();
     delay(1000);
+    baterry_loaded = true;
     MoveToGrabBaterry();
     man.stupidServo(1).setPosition(1.55); // zvedne rameno
     delay(1000);
     man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
     Straight(1000, Box_1 - currenrt_x_pos - 150, 8000);
     StopMotors();
+    ////////////////////////////////////////////////////////////////////////
     Serial.println("givecolor");
     delay(500);
     Box_1_c = ReciveData();
     if (Box_1_c == RED)
     {
-       Straight(1000, 150, 3000);
+      Straight(1000, 150, 3000);
       StopMotors();
       man.stupidServo(2).setPosition(2); // pozice magnetu pro pousteni baterek
-    }
-    if (Box_1_c == BLUE)
-    {
-      man.leds().blue(true);
-      Backward(1000, currenrt_x_pos - Box_2 + 150);
-      StopMotors();
-      Serial.println("givecolor");
       delay(500);
-      Box_2_c = ReciveData();
-      if (Box_2_c == RED){
-        Straight(1000,150,10000);
-        StopMotors();
-        man.stupidServo(2).setPosition(2); // pozice magnetu pro pousteni baterek
-      }
+      Backward(1000, currenrt_x_pos - Baterry_2);
+      StopMotors();
+      man.stupidServo(0).setPosition(2); // 90 deg right
+      man.stupidServo(2).setPosition(0); // pozice magnetu pro brani baterek
+      delay(1000);
+      man.stupidServo(1).disable();
+      delay(1000);
+      baterry_loaded = true;
+      //tady ma baterku 
     }
 
-    ///////////////////////////////////////////////////////////
-    // tady se podiva na barvu baterky
-    //  if (color == "red"){
-    //    Box_1_c = RED;
-    //  }
-    //  else if (color == "blue"){
-    //    Box_1_c = BLUE;
-    //  }
 
-    // pozice magnetu pro pousteni baterek
-    ////////////////////////////////////////prvni baterka
-    delay(500);
-    // BackwardUntillWall();
+
+
+
+
+
+
+
+//konec ifu podle strany hriste 
   }
+
+
 }
 void loop()
 {
