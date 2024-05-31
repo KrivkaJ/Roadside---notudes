@@ -82,6 +82,21 @@ void setup()
   servoBus.setAutoStopParams(par);
   servoBus.setAutoStop(0, false);
 
+  while(true){
+    if (man.ultrasound(0).measure()>0 && man.ultrasound(0).measure()< 500){
+      Serial.println("enemy front");
+
+    }
+    if (man.ultrasound(1).measure()>0 && man.ultrasound(1).measure()< 500){
+      Serial.println("enemy back");
+
+    }
+    else{
+      Serial.println("no enemy");
+    }
+
+  }
+
 
   while (true)
   {
