@@ -14,13 +14,13 @@ int last_x_pos = 0;
 // calculates angle for left klepeto
 
 //vzdalenosti krabicek a baterek 
-int Baterry_1 = 1450; // distance to Battery in mm 
+int Baterry_1 = 1450+200; // distance to Battery in mm 
 int Baterry_2 = 1450 - 1*65;
 int Baterry_3 = 1450 - 2*65;
 int Baterry_4 = 1450 - 3*65;
 
 
-int Box_1 = 1950;
+int Box_1 = 1950+200;
 
 int Box_2 = Box_1 - 1*200;
 
@@ -471,7 +471,7 @@ void Backward(int speed, int distance)
   // man.motor(rb::MotorId::M4).speed(0);
 }
 void BackwardUntillWall(){
-  while (man.buttons().right() == 0 || man.buttons().left() == 0)
+  while (man.buttons().right() == 0 && man.buttons().left() == 0)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
     man.motor(rb::MotorId::M1).speed(2000);
     man.motor(rb::MotorId::M4).speed(-2000);
