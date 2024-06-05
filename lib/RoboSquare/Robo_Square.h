@@ -18,6 +18,9 @@ int Baterry_1 = 1450+200; // distance to Battery in mm
 int Baterry_2 = 1450 - 1*65;
 int Baterry_3 = 1450 - 2*65;
 int Baterry_4 = 1450 - 3*65;
+int Baterry_5 = 1450 - 4*65;
+int Baterry_6 = 1450 - 5*65;
+
 
 
 int Box_1 = 1950+200;
