@@ -39,7 +39,13 @@ int Box_7 = Box_1 - 6*200;
 
 int Box_8 = Box_1 - 7*200;
 
+enum Enemy{
+NO,
+FRONT,
+BACK
+};
 
+Enemy enemy = NO;
 
 
 Angle left_angle(Angle angle)
@@ -129,7 +135,8 @@ void Straight(int speed, int distance,int timeout)
   //Serial.println(distance);
   while (ticks_M1 < distance && time < timeout)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
-    man.motor(rb::MotorId::M1).speed(-speed);
+  if(enemy == BACK || enemy == NO){
+        man.motor(rb::MotorId::M1).speed(-speed);
     man.motor(rb::MotorId::M4).speed(speed);
     man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor &info)
                                            {
@@ -139,6 +146,15 @@ void Straight(int speed, int distance,int timeout)
                                            {
             //Serial.println( -info.position());
             ticks_M1 =   -info.position(); });
+ 
+
+  }
+   if (enemy == FRONT){
+    man.motor(rb::MotorId::M1).speed(0);
+    man.motor(rb::MotorId::M4).speed(0);
+    delay(500);
+  }
+
 
     delay(10);
     time = time + 10;
@@ -455,6 +471,7 @@ void Backward(int speed, int distance)
   //Serial.println(distance);
   while (ticks_M1 < distance)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
+  if (enemy == NO || enemy == FRONT){
     man.motor(rb::MotorId::M1).speed(speed);
     man.motor(rb::MotorId::M4).speed(-speed);
     man.motor(rb::MotorId::M4).requestInfo([&ticks_M4](rb::Motor &info)
@@ -465,7 +482,12 @@ void Backward(int speed, int distance)
                                            {
             //Serial.println( -info.position());
             ticks_M1 =   info.position(); });
-
+  }
+  if(enemy == BACK){
+    man.motor(rb::MotorId::M1).speed(0);
+    man.motor(rb::MotorId::M4).speed(0);
+    delay(100);
+  }
     delay(10);
   }
     currenrt_x_pos =  currenrt_x_pos - (mm_to_ticks*ticks_M1 - last_ticks_M1*mm_to_ticks);

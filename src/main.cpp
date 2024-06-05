@@ -28,11 +28,7 @@ enum BoxColor
   BLUE,
   IDK
 };
-enum Enemy{
-NO,
-FRONT,
-BACK
-};
+
 BoxColor Box_1_c = IDK;
 BoxColor Box_2_c = IDK;
 BoxColor Box_3_c = IDK;
@@ -43,7 +39,7 @@ BoxColor Box_7_c = IDK;
 BoxColor Box_8_c = IDK;
 
 Side side = REDSIDE;
-Enemy enemy = NO;
+
 
 bool baterry_loaded = false;
 
@@ -84,7 +80,7 @@ void ColisionDetector(){
       enemy = BACK;
       //Serial.println("enemy back");
     }
-    else
+    if(man.ultrasound(1).measure() >= 500 && man.ultrasound(0).measure() >= 500)
     {
       enemy = NO;
       //Serial.println("no enemy");
@@ -96,35 +92,35 @@ void GetRestBoxColor()
 {
   if (Box_8_c == BLUE)
   {
-    Box_1_c == RED;
+    Box_1_c = RED;
   }
   else if (Box_8_c == RED)
   {
-    Box_1_c == BLUE;
+    Box_1_c = BLUE;
   }
   if (Box_7_c == BLUE)
   {
-    Box_2_c == RED;
+    Box_2_c = RED;
   }
   else if (Box_7_c == RED)
   {
-    Box_2_c == BLUE;
+    Box_2_c = BLUE;
   }
   if (Box_6_c == BLUE)
   {
-    Box_3_c == RED;
+    Box_3_c = RED;
   }
   else if (Box_6_c == RED)
   {
-    Box_3_c == BLUE;
+    Box_3_c = BLUE;
   }
   if (Box_5_c == BLUE)
   {
-    Box_4_c == RED;
+    Box_4_c = RED;
   }
   else if (Box_5_c == RED)
   {
-    Box_4_c == BLUE;
+    Box_4_c = BLUE;
   }
 }
 
@@ -147,19 +143,19 @@ void setup()
 
 
 
-  while (true)
-  {
-    if (Serial.available() > 0)
-    {
-      String data = Serial.readStringUntil('\n');
-      if (data == "ready")
-      {
-        man.leds().green(true);
-        break;
-      }
-    }
-    delay(10);
-  }
+  // while (true)
+  // {
+  //   if (Serial.available() > 0)
+  //   {
+  //     String data = Serial.readStringUntil('\n');
+  //     if (data == "ready")
+  //     {
+  //       man.leds().green(true);
+  //       break;
+  //     }
+  //   }
+  //   delay(10);
+  // }
 
   while (true)
   {
@@ -193,9 +189,24 @@ void setup()
 
     delay(10);
   }
+   
+
   ///////////////////////////////////////////////////////////////////////
   if (side == BLUESIDE)
   {
+    man.stupidServo(0).setPosition(-2); // 90 deg left
+    delay(1000);
+    man.stupidServo(1).setPosition(2);
+    man.stupidServo(2).setPosition(1); // pozice magnetu pro brani baterek
+
+    // Straight(1000,999999,15000);
+    // while (true)
+    // {
+    //   /* code */
+    //   delay(100);
+    // }
+    
+
     Straight(1000, Box_8, 5000);
     Serial.println("givecolor");
     delay(500);
@@ -215,6 +226,7 @@ void setup()
     Serial.println("givecolor");
     delay(500);
     Box_6_c = ReciveData();
+
     GetRestBoxColor();
 
     if (Box_8_c == BLUE)
@@ -224,7 +236,7 @@ void setup()
       man.stupidServo(0).setPosition(-2); // 90 deg left
       delay(1000);
       man.stupidServo(1).setPosition(1.4);
-      man.stupidServo(2).disable(); // pozice magnetu pro brani baterek
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
       delay(1000);
 
       MoveToGrabBaterry();
@@ -245,7 +257,7 @@ void setup()
       man.stupidServo(0).setPosition(-2); // 90 deg left
       delay(1000);
       man.stupidServo(1).setPosition(1.4);
-      man.stupidServo(2).disable(); // pozice magnetu pro brani baterek
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
       delay(1000);
 
       MoveToGrabBaterry();
@@ -286,7 +298,7 @@ void setup()
       man.stupidServo(0).setPosition(-2); // 90 deg left
       delay(1000);
       man.stupidServo(1).setPosition(1.4);
-      man.stupidServo(2).disable(); // pozice magnetu pro brani baterek
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
       delay(1000);
 
       MoveToGrabBaterry();
@@ -303,7 +315,7 @@ void setup()
     BackwardUntillWall();
     Straight(1000, 150, 2000);
     StopMotors();
-    TurnLeft(90);
+    Turn(90);
     BackwardUntillWall();
     klepeto.Move(open);
     Straight(1000, 800, 3000);
@@ -316,145 +328,137 @@ void setup()
 
 
 
-
-
-    man.stupidServo(1).setPosition(1.4);
-    man.stupidServo(0).setPosition(-2); // 90 deg left
-    man.stupidServo(2).setPosition(1);  // pozice magnetu pro brani baterek
-    delay(1000);
-    //////////////////////////////////konec pripravy
-    Straight(1500, Baterry_1, 10000);
-    StopMotors();
-    ////////////////////////////////dojede k prvni baterce
-    man.stupidServo(1).disable();
-    delay(1000);
-    baterry_loaded = true;
-    MoveToGrabBaterry();
-    man.stupidServo(1).setPosition(1.55); // zvedne rameno
-    delay(1000);
-    man.stupidServo(0).setPosition(2); // otoci se ramenem na drohou stranu
-    Straight(1000, Box_1 - currenrt_x_pos - 150 - 50, 8000);
-    StopMotors();
-    ////////////////////////////////////////////////////////////////////////
-    Serial.println("givecolor");
-    delay(500);
-    Box_1_c = ReciveData();
-    if (Box_1_c == RED)
-    {
-      Straight(1000, 150, 3000);
-      StopMotors();
-      delay(500);
-      man.stupidServo(2).setPosition(-2); // pozice magnetu pro pousteni baterek
-      delay(1000);
-      Backward(1000, currenrt_x_pos - Baterry_2 + 50);
-      StopMotors();
-      man.stupidServo(0).setPosition(-2); // 90 deg right
-      man.stupidServo(2).setPosition(1);  // pozice magnetu pro brani baterek
-      delay(1000);
-      man.stupidServo(1).disable();
-      delay(1000);
-      baterry_loaded = true;
-      MoveToGrabBaterry();
-      man.stupidServo(1).setPosition(1.55); // zvedne rameno
-      delay(1000);
-      man.stupidServo(0).setPosition(2); // otoci se ramenem na drohou str
-      // tady ma baterku
-      Straight(1000, Box_2 - currenrt_x_pos, 10000);
-    }
-
-    Backward(1000, currenrt_x_pos - Box_2 + 150);
-    StopMotors();
-    Serial.println("givecolor");
-    delay(500);
-    Box_2_c = ReciveData();
-
-    if (Box_2_c == RED)
-    {
-      Straight(1000, 50, 4000);
-      StopMotors();
-      man.stupidServo(2).setPosition(-2);
-      delay(800);
-      // vylozi baterku do druheho kastliku
-    }
-    man.stupidServo(1).setPosition(2);
-    BackwardUntillWall();
-    Straight(1000, 150, 2000);
-    StopMotors();
-    TurnLeft(90);
-    BackwardUntillWall();
-    klepeto.Move(open);
-    Straight(1000, 800, 3000);
-    StopMotors();
   }
   if (side == REDSIDE)
   {
-    man.stupidServo(1).setPosition(1.4);
-    man.stupidServo(0).setPosition(2); // 90 deg right
-    man.stupidServo(2).setPosition(1); // pozice magnetu pro brani baterek
+     man.stupidServo(0).setPosition(2); // 90 deg right
     delay(1000);
-    //////////////////////////////////konec pripravy
-    Straight(1500, Baterry_1, 10000);
-    StopMotors();
-    ////////////////////////////////dojede k prvni baterce
-    man.stupidServo(1).disable();
-    delay(1000);
-    baterry_loaded = true;
-    MoveToGrabBaterry();
-    man.stupidServo(1).setPosition(1.55); // zvedne rameno
-    delay(1000);
-    man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
-    Straight(1000, Box_1 - currenrt_x_pos - 150 - 50, 8000);
-    StopMotors();
-    ////////////////////////////////////////////////////////////////////////
-    Serial.println("givecolor");
-    delay(500);
-    Box_1_c = ReciveData();
-    if (Box_1_c == RED)
-    {
-      Straight(1000, 150, 3000);
-      StopMotors();
-      delay(500);
-      man.stupidServo(2).setPosition(-2); // pozice magnetu pro pousteni baterek
-      delay(1000);
-      Backward(1000, currenrt_x_pos - Baterry_2 + 50);
-      StopMotors();
-      man.stupidServo(0).setPosition(2); // 90 deg right
-      man.stupidServo(2).setPosition(1); // pozice magnetu pro brani baterek
-      delay(1000);
-      man.stupidServo(1).disable();
-      delay(1000);
-      baterry_loaded = true;
-      MoveToGrabBaterry();
-      man.stupidServo(1).setPosition(1.55); // zvedne rameno
-      delay(1000);
-      man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou str
-      // tady ma baterku
-      Straight(1000, Box_2 - currenrt_x_pos, 10000);
-    }
-
-    Backward(1000, currenrt_x_pos - Box_2 + 150);
-    StopMotors();
-    Serial.println("givecolor");
-    delay(500);
-    Box_2_c = ReciveData();
-
-    if (Box_2_c == RED)
-    {
-      Straight(1000, 50, 4000);
-      StopMotors();
-      man.stupidServo(2).setPosition(-2);
-      delay(800);
-      // vylozi baterku do druheho kastliku
-    }
     man.stupidServo(1).setPosition(2);
+    man.stupidServo(2).setPosition(1); // pozice magnetu pro brani baterek
+
+    // Straight(1000,999999,15000);
+    // while (true)
+    // {
+    //   /* code */
+    //   delay(100);
+    // }
+    
+
+    Straight(1000, Box_8, 5000);
+    Serial.println("givecolor");
+    delay(500);
+    Box_8_c = ReciveData();
+
+    Straight(1000, Box_7 - Box_8, 5000);
+    Serial.println("givecolor");
+    delay(500);
+    Box_8_c = ReciveData();
+
+    Straight(1000, Box_6 - Box_7, 5000);
+    Serial.println("givecolor");
+    delay(500);
+    Box_7_c = ReciveData();
+
+    Straight(1000, Box_5 - Box_6, 5000);
+    Serial.println("givecolor");
+    delay(500);
+    Box_6_c = ReciveData();
+
+    GetRestBoxColor();
+
+    if (Box_8_c == RED)
+    {
+      Straight(1000, Baterry_6 - currenrt_x_pos, 5000);
+
+      man.stupidServo(0).setPosition(2); // 90 deg left
+      delay(1000);
+      man.stupidServo(1).setPosition(1.4);
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
+      delay(1000);
+
+      MoveToGrabBaterry();
+
+      man.stupidServo(1).setPosition(1.55); // zvedne rameno
+      delay(800);
+      man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
+      delay(1000);
+
+      Backward(1000, currenrt_x_pos - Box_8);
+      man.stupidServo(2).setPosition(-2);
+    }
+
+    if (Box_7_c == RED)
+    {
+      Straight(1000, Baterry_6 - currenrt_x_pos, 5000);
+
+      man.stupidServo(0).setPosition(2); // 90 deg left
+      delay(1000);
+      man.stupidServo(1).setPosition(1.4);
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
+      delay(1000);
+
+      MoveToGrabBaterry();
+
+      man.stupidServo(1).setPosition(1.55); // zvedne rameno
+      delay(800);
+      man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
+      delay(1000);
+
+      Backward(1000, currenrt_x_pos - Box_7);
+      man.stupidServo(2).setPosition(-2);
+    }
+
+    if (Box_6_c == RED)
+    {
+      Straight(1000, Baterry_6 - currenrt_x_pos, 5000);
+
+      man.stupidServo(0).setPosition(2); // 90 deg left
+      delay(1000);
+      man.stupidServo(1).setPosition(1.4);
+      man.stupidServo(2).disable(); // pozice magnetu pro brani baterek
+      delay(1000);
+
+      MoveToGrabBaterry();
+
+      man.stupidServo(1).setPosition(1.55); // zvedne rameno
+      delay(800);
+      man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
+      delay(1000);
+
+      Backward(1000, currenrt_x_pos - Box_6);
+      man.stupidServo(2).setPosition(-2);
+    }
+    if (Box_5_c == RED)
+    {
+      Straight(1000, Baterry_6 - currenrt_x_pos, 5000);
+
+      man.stupidServo(0).setPosition(2); // 90 deg left
+      delay(1000);
+      man.stupidServo(1).setPosition(1.4);
+      man.stupidServo(1).disable(); // pozice magnetu pro brani baterek
+      delay(1000);
+
+      MoveToGrabBaterry();
+
+      man.stupidServo(1).setPosition(1.55); // zvedne rameno
+      delay(800);
+      man.stupidServo(0).setPosition(-2); // otoci se ramenem na drohou stranu
+      delay(1000);
+
+      Backward(1000, currenrt_x_pos - Box_5);
+      man.stupidServo(2).setPosition(-2);
+    }
+
     BackwardUntillWall();
     Straight(1000, 150, 2000);
     StopMotors();
     TurnLeft(90);
     BackwardUntillWall();
-    klepeto.Move(open);
+    //klepeto.Move(open);
     Straight(1000, 800, 3000);
     StopMotors();
+
+   
 
     // konec ifu podle strany hriste
   }
