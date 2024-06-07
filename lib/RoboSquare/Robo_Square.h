@@ -21,23 +21,23 @@ int Baterry_4 = 1450 - 3*65;
 int Baterry_5 = 1450 - 4*65;
 int Baterry_6 = 1450 - 5*65;
 
+int Box_8 = 630;
+
+int Box_1 = Box_8 + 7*200;
+
+int Box_2 = Box_8 + 6*200;
+
+int Box_3 = Box_8 + 5*200;
+
+int Box_4 = Box_8 + 4*200;
+
+int Box_5 = Box_8 + 3*200;
+
+int Box_6 = Box_8 + 2*200;
+
+int Box_7 = Box_8 + 200;
 
 
-int Box_1 = 1950+200;
-
-int Box_2 = Box_1 - 1*200;
-
-int Box_3 = Box_1 - 2*200;
-
-int Box_4 = Box_1 - 3*200;
-
-int Box_5 = Box_1 - 4*200;
-
-int Box_6 = Box_1 - 5*200;
-
-int Box_7 = Box_1 - 6*200;
-
-int Box_8 = Box_1 - 7*200;
 
 enum Enemy{
 NO,
@@ -496,10 +496,17 @@ void Backward(int speed, int distance)
   // man.motor(rb::MotorId::M4).speed(0);
 }
 void BackwardUntillWall(){
-  while (man.buttons().right() == 0 && man.buttons().left() == 0)
+  while (man.buttons().right() == 0 && man.buttons().on() == 0)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
+  if (enemy == NO || enemy == FRONT){
     man.motor(rb::MotorId::M1).speed(2000);
     man.motor(rb::MotorId::M4).speed(-2000);
+  }
+  if(enemy == BACK){
+    man.motor(rb::MotorId::M1).speed(0);
+    man.motor(rb::MotorId::M4).speed(0);
+    delay(800);
+  }
     delay(10);
   }
   man.motor(rb::MotorId::M1).speed(0);
