@@ -7,36 +7,11 @@ static SmartServoBus servoBus;
 auto &man = rb::Manager::get(); // needs to be there to work man.sometning
 // r motor 3
 //  l motor 2
-double mm_to_ticks = 0.215;
-int wheel_base = 150;
+double mm_to_ticks = 0.1188;
+int wheel_base = 191;
 double currenrt_x_pos = 0;
 int last_x_pos = 0;
 // calculates angle for left klepeto
-
-//vzdalenosti krabicek a baterek 
-int Baterry_1 = 1450+200; // distance to Battery in mm 
-int Baterry_2 = 1450 - 1*65;
-int Baterry_3 = 1450 - 2*65;
-int Baterry_4 = 1450 - 3*65;
-int Baterry_5 = 1450 - 4*65;
-int Baterry_6 = 1450 - 5*65;
-
-int Box_8 = 630;
-
-int Box_1 = Box_8 + 7*200;
-
-int Box_2 = Box_8 + 6*200;
-
-int Box_3 = Box_8 + 5*200;
-
-int Box_4 = Box_8 + 4*200;
-
-int Box_5 = Box_8 + 3*200;
-
-int Box_6 = Box_8 + 2*200;
-
-int Box_7 = Box_8 + 200;
-
 
 
 enum Enemy{
@@ -158,11 +133,10 @@ void Straight(int speed, int distance,int timeout)
 
     delay(10);
     time = time + 10;
-    currenrt_x_pos =  currenrt_x_pos + (mm_to_ticks*ticks_M1 - last_ticks_M1*mm_to_ticks);
     last_ticks_M1 = ticks_M1;
     //Serial.println(currenrt_x_pos);
-    //  Serial.print("current");
-    //  Serial.println(ticks_M1*mm_to_ticks);
+      Serial.print("current");
+      Serial.println(ticks_M1*mm_to_ticks);
     //  Serial.print("last");
     //  Serial.println(last_ticks_M1*mm_to_ticks);
   }
@@ -496,11 +470,11 @@ void Backward(int speed, int distance)
   // man.motor(rb::MotorId::M4).speed(0);
 }
 void BackwardUntillWall(){
-  while (man.buttons().right() == 0 && man.buttons().on() == 0)
+  while (man.buttons().right() == 0)
   { //(ticks_M1 < distance)&& (ticks_M4 < distance)
   if (enemy == NO || enemy == FRONT){
-    man.motor(rb::MotorId::M1).speed(2000);
-    man.motor(rb::MotorId::M4).speed(-2000);
+    man.motor(rb::MotorId::M1).speed(-2000);
+    man.motor(rb::MotorId::M4).speed(2000);
   }
   if(enemy == BACK){
     man.motor(rb::MotorId::M1).speed(0);
@@ -509,6 +483,9 @@ void BackwardUntillWall(){
   }
     delay(10);
   }
+  delay(500);
+  man.motor(rb::MotorId::M4).speed(20);
+  delay(300);
   man.motor(rb::MotorId::M1).speed(0);
   man.motor(rb::MotorId::M4).speed(0);
 }
